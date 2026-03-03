@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
-    bucket = "my-ecs-state-bucket"
-    key    = "prod/ecs-service.tfstate"
+    bucket = "your-prod-bucket"
+    key    = "ecs/prod/terraform.tfstate"
     region = "ap-south-1"
   }
 }
