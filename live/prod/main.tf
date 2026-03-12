@@ -2,20 +2,33 @@ provider "aws" {
   region = "ap-south-1"
 }
 
-module "ecs_service" {
-  source = "../../modules/ecs-service"
+module "vpc" {
+  source = "../modules/vpc"
 
-  service_name          = var.service_name
-  cluster_name          = var.cluster_name
-  task_definition       = var.task_definition
-  desired_count         = var.desired_count
+  cidr_block = "10.0.0.0/16"
 
-  private_subnets        = var.private_subnets
-  service_security_group = var.service_security_group
+  public_subnets  = ["10.0.1.0/24", "10.0.2.0/24"]
+  private_subnets = ["10.0.11.0/24", "10.0.12.0/24"]
+}
 
-  target_group_arn  = var.target_group_arn
-  alb_listener_arn  = var.alb_listener_arn
+module "alb" {
+  source = "../modules/alb"
 
-  container_name = var.container_name
-  container_port = var.container_port
+  vpc_id         = module.vpc.vpc_id
+  public_subnets = module.vpc.public_subnet_ids
+}
+
+module "roles" {
+  source = "../modules/roles"
+}
+
+module "ecs" {
+  source = "../modules/ecs"
+
+  cluster_name       = "prod-ecs"
+  container_image    = "nginx:latest"
+  subnets            = module.vpc.private_subnet_ids
+  security_groups    = []
+  tg_arn             = module.alb.tg_arn
+  execution_role_arn = module.roles.ecs_task_execution_role_arn
 }

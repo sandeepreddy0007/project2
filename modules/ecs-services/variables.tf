@@ -1,13 +1,38 @@
-variable "service_name" {}
 variable "cluster_name" {}
-variable "task_definition" {}
-variable "desired_count" { default = 1 }
 
-variable "private_subnets" { type = list(string) }
-variable "service_security_group" {}
+variable "container_image" {}
 
-variable "target_group_arn" {}
-variable "alb_listener_arn" {}
+variable "execution_role_arn" {}
 
-variable "container_name" {}
-variable "container_port" {}
+variable "subnets" {}
+
+variable "security_groups" {}
+
+variable "tg_arn" {}
+
+
+variable "task_cpu" {
+  default = "256"
+}
+
+variable "task_memory" {
+  default = "512"
+}
+
+variable "container_cpu" {
+  default = 256
+}
+
+variable "container_memory" {
+  default = 512
+}
+
+
+
+variable "db_username" {}
+
+variable "db_password" {}
+
+variable "db_subnet_group" {}
+
+variable "db_security_groups" {}
